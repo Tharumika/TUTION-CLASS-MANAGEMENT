@@ -16,6 +16,8 @@ import routes from './routes'
  * with the Router instance.
  */
 
+import { supabase } from 'src/boot/supabase'
+
 export default defineRouter(function (/* { store, ssrContext } */) {
   const createHistory = process.env.SERVER
     ? createMemoryHistory
@@ -31,6 +33,25 @@ export default defineRouter(function (/* { store, ssrContext } */) {
     // quasar.conf.js -> build -> vueRouterMode
     // quasar.conf.js -> build -> publicPath
     history: createHistory(process.env.VUE_ROUTER_BASE),
+  })
+
+  Router.beforeEach(async (to, from, next) => {
+    const { data: { session } } = await supabase.auth.getSession()
+
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+      if (!session) {
+        // Protected route and no session, redirect to login
+        next({ path: '/login' })
+      } else {
+        // Protected route and session exists, proceed
+        next()
+      }
+    } else if (to.path === '/login' && session) {
+      // Login page and session exists, redirect to dashboard
+      next({ path: '/admin-dashboard' })
+    } else {
+      next()
+    }
   })
 
   return Router
