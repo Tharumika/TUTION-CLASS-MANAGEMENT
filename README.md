@@ -21,7 +21,7 @@ Comprehensive overview of students, active classes, and revenue.
 
 ### Student Management
 Easily track student enrollment and status.
-![Student List](./screenshots/students.png)
+![Student List](./screenshots/student-list.png)
 
 ### Flexible Pricing
 Plans tailored for individual scholars and large institutions.
